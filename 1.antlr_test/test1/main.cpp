@@ -122,7 +122,7 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
             return init_val;
         }
         case BLOCK: {
-            
+
             return 426;
         }
         default:
@@ -135,7 +135,7 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
         int r = 0;
         for(int i = 0; i < k; i++) {
             r = run(getChild(tree, i));
-            cout << "lbh result: " << r << endl;
+            cout << "lbh result----" << r << endl;
         }
         return r;
     }
