@@ -1,7 +1,13 @@
-def a = 123 * 2;
-def b = 123 + a;
-def c = b / 10;
-def d = c % 10;
-def i1, i2, i3;
-a = 123;
-def f = a + b;
+{
+    def a = 123 * 2;
+    def b = 123 + a;
+    def c = b / 10;
+    def d = c % 10;
+    def i1, i2, i3;
+    {
+        def d = a + 12;
+        def a = 10000;
+        def e = a + 12;
+    }
+    def f = a + 12;
+}

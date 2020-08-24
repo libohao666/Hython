@@ -21,6 +21,7 @@ class ExprTreeEvaluator {
 public:
     int run(pANTLR3_BASE_TREE);
     void set_param(string name, int val);
+    int get_param(string name);
 };
  
 pANTLR3_BASE_TREE getChild(pANTLR3_BASE_TREE, unsigned);
@@ -59,10 +60,17 @@ int main(int argc, char* argv[])
  
 void ExprTreeEvaluator::set_param(string name, int val) {
     if (memory.find(name) != memory.end()) {
-        throw std::runtime_error("param redefined" + name);
+        throw std::runtime_error("!!![Error] param redefined : " + name);
     }
     memory[name] = val;
     return ;
+}
+
+int ExprTreeEvaluator::get_param(string name) {
+    if (memory.find(name) == memory.end()) {
+        throw std::runtime_error("!!![Error] param unknown : " + name);
+    }
+    return memory[name];
 }
 
 int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
@@ -81,7 +89,7 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
         }
         case ID: {
             string var(getText(tree));
-            return memory[var];
+            return get_param(var);
         }
         case PLUS:
             return run(getChild(tree,0)) + run(getChild(tree,1));
@@ -112,6 +120,10 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
                 this->set_param(var, init_val);
             }
             return init_val;
+        }
+        case BLOCK: {
+            
+            return 426;
         }
         default:
             cout << "Unhandled token: #" << tok->type << '\n';
