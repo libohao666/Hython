@@ -56,38 +56,25 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
             return memory[var];
         }
         case PLUS: {
-            int ret = run(getChild(tree,0)) + run(getChild(tree,1));
-            cout << "now-val = " << ret << '\n';
-            return ret;
+            return run(getChild(tree,0)) + run(getChild(tree,1));
         }
         case MINUS: {
-            int ret = run(getChild(tree,0)) - run(getChild(tree,1));
-            cout << "now-val = " << ret << '\n';
-            return ret;
+            return run(getChild(tree,0)) - run(getChild(tree,1));
         }
         case TIMES: {
-            int ret = run(getChild(tree,0)) * run(getChild(tree,1));
-            cout << "now-val = " << ret << '\n';
-            return ret;
+            return run(getChild(tree,0)) * run(getChild(tree,1));
         }
-        case CHU: {
-            int ret = run(getChild(tree,0)) / run(getChild(tree,1));
-            cout << "now-val = " << ret << '\n';
-            return ret;
+        case DIV: {
+            return run(getChild(tree,0)) / run(getChild(tree,1));
         }
-        case QUYU: {
-            int ret = run(getChild(tree,0)) % run(getChild(tree,1));
-            cout << "now-val = " << ret << '\n';
-            return ret;
+        case MOD: {
+            return run(getChild(tree,0)) % run(getChild(tree,1));
         }
         case ASSIGN: {
             string var(getText(getChild(tree,0)));
             int val = run(getChild(tree,1));
             memory[var] = val;
             return val;
-        }
-        case BLOCK: {
-            return 0;
         }
         default:
             cout << "Unhandled token: #" << tok->type << '\n';
@@ -99,6 +86,7 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
         int r = 0;
         for(int i = 0; i < k; i++) {
             r = run(getChild(tree, i));
+            cout << "Eval result: "<< r << "\n";
         }
         return r;
     }
