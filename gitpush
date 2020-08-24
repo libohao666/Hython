@@ -1,5 +1,4 @@
 #!/bin/bash
-cd ~/Desktop/learn
 git add --all
 #git add *
 git commit -m $(date "+%Y%m%d%H%M%S")
