@@ -18,12 +18,14 @@ using std::endl;
  
 class ExprTreeEvaluator {
     map<string,int> memory;
+    map<pANTLR3_BASE_TREE *, map<string,int>> block_memory;
 public:
     int run(pANTLR3_BASE_TREE);
     void set_param(string name, int val);
     int get_param(string name);
+    void copy_block(pANTLR3_BASE_TREE);
 };
- 
+
 pANTLR3_BASE_TREE getChild(pANTLR3_BASE_TREE, unsigned);
 const char* getText(pANTLR3_BASE_TREE tree);
  
@@ -57,7 +59,10 @@ int main(int argc, char* argv[])
   return 0;
 }
 
- 
+void ExprTreeEvaluator::copy_block(pANTLR3_BASE_TREE tree) {
+    
+}
+
 void ExprTreeEvaluator::set_param(string name, int val) {
     if (memory.find(name) != memory.end()) {
         throw std::runtime_error("!!![Error] param redefined : " + name);
@@ -122,7 +127,7 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
             return init_val;
         }
         case BLOCK: {
-
+            
             return 426;
         }
         default:
