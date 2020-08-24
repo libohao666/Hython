@@ -1,6 +1,7 @@
-3 + 5
-7 + 89
-a = 97 * 2
-b = 123 + a
-c = b / 10
-d = c % 10
+def a = 123 * 2;
+def b = 123 + a;
+def c = b / 10;
+def d = c % 10;
+def i1, i2, i3;
+a = 123;
+def f = a + b;

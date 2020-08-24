@@ -1,35 +1,51 @@
 grammar ExprCppTree;
+ 
 options {
     language = C;
     output = AST;
     ASTLabelType=pANTLR3_BASE_TREE;
 }
+ 
 @header {
     #include <assert.h>
 }
+ 
+// The suffix '^' means make it a root.
+// The suffix '!' means ignore it.
+ 
 expr: multExpr ((PLUS^ | MINUS^) multExpr)*
     ;
+ 
 PLUS: '+';
 MINUS: '-';
+ 
 multExpr
     : atom ((TIMES^ | DIV^ | MOD^) atom)*
     ;
+ 
 TIMES: '*';
 DIV: '/';
 MOD: '%';
-
 atom: INT
     | ID
     | '('! expr ')'!
     ;
- 
-stmt: expr NEWLINE -> expr  // tree rewrite syntax
-    | ID ASSIGN expr NEWLINE -> ^(ASSIGN ID expr) // tree notation
+
+defid_sub: ID
+    | ID^ ASSIGN! expr
+    ;
+defid: DEF^ defid_sub (','! defid_sub)*
+    ;
+DEF: 'def';
+
+stmt: expr ';' NEWLINE? -> expr  // tree rewrite syntax
+    | ID ASSIGN expr NEWLINE? -> ^(ASSIGN ID expr) // tree notation
     | NEWLINE ->   // ignore
+    | defid ';' NEWLINE? -> defid
     ;
  
 ASSIGN: '=';
- 
+
 prog
     : (stmt {
         #ifdef DEBUG    
@@ -41,7 +57,7 @@ prog
         )+
     ;
  
-ID: ('a'..'z'|'A'..'Z')+ ;
+ID: ('a'..'z'|'A'..'Z')+ ('a'..'z'|'A'..'Z'|'0'..'9')* ;
 INT: '~'? '0'..'9'+ ;
 NEWLINE: '\r'? '\n' ;
 WS : (' '|'\t')+ {$channel = HIDDEN;};
