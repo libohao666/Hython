@@ -18,12 +18,15 @@ using std::endl;
  
 class ExprTreeEvaluator {
     map<string,int> memory;
-    map<pANTLR3_BASE_TREE *, map<string,int>> block_memory;
+    int block_cnt = 0;
 public:
+    ExprTreeEvaluator() : next(NULL){}
+    ExprTreeEvaluator(ExprTreeEvaluator *next) : next(next) {
+    }
     int run(pANTLR3_BASE_TREE);
     void set_param(string name, int val);
     int get_param(string name);
-    void copy_block(pANTLR3_BASE_TREE);
+    ExprTreeEvaluator *next;
 };
 
 pANTLR3_BASE_TREE getChild(pANTLR3_BASE_TREE, unsigned);
@@ -59,10 +62,6 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-void ExprTreeEvaluator::copy_block(pANTLR3_BASE_TREE tree) {
-    
-}
-
 void ExprTreeEvaluator::set_param(string name, int val) {
     if (memory.find(name) != memory.end()) {
         throw std::runtime_error("!!![Error] param redefined : " + name);
@@ -72,10 +71,14 @@ void ExprTreeEvaluator::set_param(string name, int val) {
 }
 
 int ExprTreeEvaluator::get_param(string name) {
-    if (memory.find(name) == memory.end()) {
+    if (this->memory.find(name) == this->memory.end() && !this->next) {
         throw std::runtime_error("!!![Error] param unknown : " + name);
+    } 
+    if (this->memory.find(name) != this->memory.end()) {
+        return this->memory[name];
     }
-    return memory[name];
+    if (this->next) return this->next->get_param(name);
+    return 0;
 }
 
 int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
@@ -94,7 +97,7 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
         }
         case ID: {
             string var(getText(tree));
-            return get_param(var);
+            return this->get_param(var);
         }
         case PLUS:
             return run(getChild(tree,0)) + run(getChild(tree,1));
@@ -127,8 +130,13 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
             return init_val;
         }
         case BLOCK: {
-            
-            return 426;
+            ExprTreeEvaluator new_obj(this);
+            int k = tree->getChildCount(tree);
+            int r = 0;
+            for(int i = 0; i < k; i++) {
+                r = new_obj.run(getChild(tree, i));
+            }
+            return r;
         }
         default:
             cout << "Unhandled token: #" << tok->type << '\n';
