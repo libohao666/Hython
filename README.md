@@ -194,3 +194,16 @@ Evaluator result: 15
 3. 修改解释器，对于每一行内容，都输出其表达式的值（修改解释器的功能）
 4. 增加变量定义的语法结构
 5. 增加作用域的功能
+
+### 2.简单的流程控制
+1.整理工程目录，include/lib/bin/src/...
+    thirdpart第三方模块　jar, .g, 
+    lib 库文件 libs
+    main.cpp 主函数
+2.整理 main.cpp 内容，分成头文件和原文件，main.cpp 尽量简单
+3.print 子句
+4.增加条件表达式(==,<=, >=, && , ||)
+5.if 结构的增加
+6.for 结构的增加
+7.while 结构的增加
+8.do...while 结构的增加
