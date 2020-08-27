@@ -6,6 +6,7 @@
     def i1, i2, i3;
     {
         def d = a + 12;
+        a = 500;
         def a = 10000;
         def e = a + 12;
     }
