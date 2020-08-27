@@ -20,8 +20,7 @@ class ExprTreeEvaluator {
     int block_cnt = 0;
 public:
     ExprTreeEvaluator() : next(NULL){}
-    ExprTreeEvaluator(ExprTreeEvaluator *next) : next(next) {
-    }
+    ExprTreeEvaluator(ExprTreeEvaluator *next) : next(next) {}
     int run(pANTLR3_BASE_TREE);
     void set_param(string name, int val);
     int get_param(string name);
@@ -129,11 +128,11 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
             return init_val;
         }
         case BLOCK: {
-            ExprTreeEvaluator new_obj(this);
+            ExprTreeEvaluator tmp(this);
             int k = tree->getChildCount(tree);
             int r = 0;
             for(int i = 0; i < k; i++) {
-                r = new_obj.run(getChild(tree, i));
+                r = tmp.run(getChild(tree, i));
             }
             return r;
         }
