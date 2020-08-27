@@ -92,6 +92,7 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
 {
     pANTLR3_COMMON_TOKEN tok = tree->getToken(tree);
     if(tok) {
+        cout << tok->type << endl;
         switch(tok->type) {
         case INT: {
             const char* s = getText(tree);
@@ -156,26 +157,40 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
             cout << endl;
             return 1;
         }
-        case EQ: {
-            cout << "!!!" << endl;
-            int k = tree->getChildCount(tree);
-            int r = 0;
-            for(int i = 0; i < k; i++) {
-                string var(getText(getChild(tree, i)));
-                cout << var;
-            }
-            cout << endl;
+        case OR: {
+            cout << "In OR" << endl;
+            return 0;
+        }
+        case AND: {
+            cout << "In AND" << endl;
+            return 0;
+        }
+        case GE: {
+            cout << "In GE" << endl;
             return 0;
         }
         case GT: {
-            cout << "!!!>" << endl;
-            int k = tree->getChildCount(tree);
-            int r = 0;
-            for(int i = 0; i < k; i++) {
-                string var(getText(getChild(tree, i)));
-                cout << var;
-            }
-            cout << endl;
+            cout << "In GT" << endl;
+            return 0;
+        }
+        case LE: {
+            cout << "In LE" << endl;
+            return 0;
+        }
+        case LITTLE: {
+            cout << "In LITTLE" << endl;
+            return 0;
+        }
+        case EQ: {
+            cout << "In EQ" << endl;
+            return 0;
+        }
+        case NE: {
+            cout << "In NE" << endl;
+            return 0;
+        }
+        case IF: {
+            cout << "In IF" << endl;
             return 0;
         }
         default:
