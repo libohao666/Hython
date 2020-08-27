@@ -1,6 +1,6 @@
 
 
-![1](/home/lbh/Desktop/ALL/1.haizei/19.hython/Hython/1.png)
+![1](1.png)
 
 ### 使用Antlr的C接口
 
