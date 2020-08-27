@@ -14,3 +14,4 @@
     print a;
     print 10000;
 }
+while 1: {}

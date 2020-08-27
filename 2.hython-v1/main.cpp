@@ -92,7 +92,6 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
 {
     pANTLR3_COMMON_TOKEN tok = tree->getToken(tree);
     if(tok) {
-        cout << tok->type << endl;
         switch(tok->type) {
         case INT: {
             const char* s = getText(tree);
@@ -156,6 +155,10 @@ int ExprTreeEvaluator::run(pANTLR3_BASE_TREE tree)
             }
             cout << endl;
             return 1;
+        }
+        case WHILE: {
+            cout << "In while" << endl;
+            return 0;
         }
         case OR: {
             cout << "In OR" << endl;
