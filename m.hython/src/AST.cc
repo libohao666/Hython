@@ -3,7 +3,8 @@
 
 namespace haizei {
 
-ASTNode::ASTNode(const char *file_name) {
+ASTNode::ASTNode(int argc, const char *file_name) {
+    assert(argc > 1);
     init_tree(file_name);
 }
 

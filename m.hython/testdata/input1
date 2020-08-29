@@ -13,4 +13,5 @@
     def f = a + 12;
     print a;
     print 10000;
+    print (f);
 }

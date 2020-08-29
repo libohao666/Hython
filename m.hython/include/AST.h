@@ -12,7 +12,7 @@ namespace haizei {
 
 class ASTNode {
 public:
-    ASTNode(const char *file_name);
+    ASTNode(int, const char *);
     ASTNode(pANTLR3_BASE_TREE);
     int size();
     std::string text();

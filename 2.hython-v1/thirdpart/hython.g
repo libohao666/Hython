@@ -17,7 +17,17 @@ defid_expr
     : DEF! defid (','! defid)* 
     ;
 defid
-    : ID^ (ASSIGN! expr)?
+    : ID^ (ASSIGN! condition_expr)?
+    ;
+
+condition_expr: andExpr (OR^ andExpr)*
+    ;
+andExpr: cmp_atom (AND^ cmp_atom)*
+    ;
+cmp_atom: cond_atom ((GT^ | LITTLE^ | EQ^ | GE^ | LE^ | NE^) cond_atom)?
+    ;
+cond_atom
+    : expr
     ;
 
 expr: multExpr ((PLUS^ | MINUS^) multExpr)*
@@ -47,35 +57,25 @@ while_expr
 
 init_expr
     : defid_expr -> ^(DEF defid_expr)
-    | ID ASSIGN expr -> ^(ASSIGN ID expr)
+    | ID ASSIGN condition_expr -> ^(ASSIGN ID condition_expr)
     ;
 
 for_do_expr
-    : ID ASSIGN expr -> ^(ASSIGN ID expr)
-    ;
-
-condition_expr: andExpr (OR^ andExpr)*
-    ;
-andExpr: cmp_atom (AND^ cmp_atom)*
-    ;
-cmp_atom: cond_atom ((GT^ | LITTLE^ | EQ^ | GE^ | LE^ | NE^) cond_atom)?
-    ;
-cond_atom
-    : expr
+    : ID ASSIGN condition_expr -> ^(ASSIGN ID condition_expr)
     ;
 
 block
     : '{'! (stmt)* '}'!
     ;
 
-stmt: expr ';' -> expr  // tree rewrite syntax
+stmt: condition_expr ';' -> condition_expr  // tree rewrite syntax
     | defid_expr ';' -> ^(DEF defid_expr)
-    | ID ASSIGN expr ';' -> ^(ASSIGN ID expr) // tree notation
+    | ID ASSIGN condition_expr ';' -> ^(ASSIGN ID condition_expr) // tree notation
     | block -> ^(BLOCK block)
     | if_expr
     | for_expr
     | while_expr
-    | PRINT^ expr (','! expr)* ';'!
+    | PRINT^ condition_expr (','! condition_expr)* ';'!
     ;
 
 prog
