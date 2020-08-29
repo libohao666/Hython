@@ -2,10 +2,13 @@
     def a = 1, b = 2;
     if (a < b) print a, b;
     else print 1000;
+    
+    //def i = 0;
     for (def i = 0; i <= 100; i = i + 1) {
         print i;
     }
-
+    print i;
+    
     def j = 1;
     while (j <= 5) {
         print j;
