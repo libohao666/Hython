@@ -119,6 +119,28 @@ int ExprTreeEvaluator::run(haizei::ASTNode tree)
         case NE: {
             return run(tree[0]) != run(tree[1]);
         }
+        case IF: {
+            if (run(tree[0])) {
+                run(tree[1]);
+            } else if (tree.size() == 3) {
+                run(tree[2]);
+            }
+            return 0;
+        }
+        case FOR: {
+            for (run(tree[0]); run(tree[1]); run(tree[2])) run(tree[3]);
+            return 0;
+        }
+        case WHILE: {
+            while (run(tree[0])) run(tree[1]);
+            return 0;
+        }
+        case DOWHILE: {
+            do {
+                run(tree[1]);
+            } while(run(tree[0]));
+            return 0;
+        }
         default:
             std::cout << "Unhandled token: #" << tree.type() << std::endl;
             return -1;

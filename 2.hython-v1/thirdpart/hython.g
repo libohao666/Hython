@@ -52,7 +52,7 @@ for_expr
 
 while_expr
     : WHILE^ '('! condition_expr ')'! stmt
-    | DO '{' stmt '}' WHILE '(' condition_expr ')' ';' -> ^(DOWHILE condition_expr stmt)
+    | DO block_tree WHILE '(' condition_expr ')' ';' -> ^(DOWHILE condition_expr block_tree)
     ;
 
 init_expr
@@ -67,6 +67,7 @@ for_do_expr
 block
     : '{'! (stmt)* '}'!
     ;
+block_tree: block -> ^(BLOCK block);
 
 stmt: condition_expr ';' -> condition_expr  // tree rewrite syntax
     | defid_expr ';' -> ^(DEF defid_expr)
