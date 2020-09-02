@@ -1,6 +1,7 @@
 #include <master.h>
 #include <single.h>
 #include <memory>
+#include <iostream>
 
 namespace haizei {
 

@@ -15,7 +15,7 @@ ASTNode::ASTNode(pANTLR3_BASE_TREE node) : tree(node) {
     tok = tree->getToken(tree);
 }
 
-int ASTNode::size() {
+int ASTNode::size() const {
     return tree->getChildCount(tree);
 }
 
@@ -30,12 +30,12 @@ ASTNode ASTNode::operator[](int i) {
     return (pANTLR3_BASE_TREE)tree->getChild(tree, i);
 }
 
-bool ASTNode::hasToken(){
+bool ASTNode::hasToken() const {
     if (tok) return true;
     return false;
 }
 
-int ASTNode::type() {
+int ASTNode::type() const {
     return tok->type;
 }
 
