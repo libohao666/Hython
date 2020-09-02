@@ -1,3 +1,12 @@
+/*************************************************************************
+	> File Name: single.h
+	> Author: huguang
+	> Mail: hug@haizeix.com
+	> Created Time: 三  9/ 2 09:52:25 2020
+ ************************************************************************/
+
+#ifndef _SINGLE_H
+#define _SINGLE_H
 #include <handle.h>
 #include <mutex>
 
@@ -12,7 +21,7 @@ protected:
 
 class MasterChainSingle : public Singleton {
 public :
-    static int run(ASTNode &, std::shared_ptr<Parameter> &);
+    static int run(ASTNode, std::shared_ptr<Parameter> &);
 private:
     static const IHandle *get();
     MasterChainSingle() = delete;
@@ -21,3 +30,5 @@ private:
 };
 
 }
+
+#endif

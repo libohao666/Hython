@@ -15,6 +15,16 @@ ASTNode::ASTNode(pANTLR3_BASE_TREE node) : tree(node) {
     tok = tree->getToken(tree);
 }
 
+ASTNode::~ASTNode() {}
+
+void ASTNode::destroy() {
+    parser->free(parser);
+    tokens->free(tokens);
+    lex->free(lex);
+    input->free(input);
+    return ;
+}
+
 int ASTNode::size() const {
     return tree->getChildCount(tree);
 }
@@ -22,14 +32,7 @@ int ASTNode::size() const {
 std::string ASTNode::text() {
     return std::string((char *)tree->getText(tree)->chars);
 }
-
-ASTNode ASTNode::operator[](int i) {
-    if (i < 0 || i >= this->size()) {
-        throw std::runtime_error("ASTNode index error");
-    }
-    return (pANTLR3_BASE_TREE)tree->getChild(tree, i);
-}
-
+    
 bool ASTNode::hasToken() const {
     if (tok) return true;
     return false;
@@ -39,12 +42,11 @@ int ASTNode::type() const {
     return tok->type;
 }
 
-void ASTNode::destroy() {
-    parser->free(parser);
-    tokens->free(tokens);
-    lex->free(lex);
-    input->free(input);
-    return ;
+ASTNode ASTNode::operator[](int i) {
+    if (i < 0 || i >= this->size()) {
+        throw std::runtime_error("ASTNode index error");
+    }
+    return (pANTLR3_BASE_TREE)tree->getChild(tree, i);
 }
 
 void ASTNode::init_tree(const char *file_name) {
@@ -60,6 +62,5 @@ void ASTNode::init_tree(const char *file_name) {
     return ;
 }
 
-ASTNode::~ASTNode() {}
+} // end of namespace haizei
 
-} // end of haizei

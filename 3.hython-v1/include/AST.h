@@ -1,9 +1,13 @@
-/*
-* @Author: lbh
-* @Date: 2020-09-02 09:13:49 
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2020-09-02 09:41:17
-*/
+/*************************************************************************
+	> File Name: AST.h
+	> Author: huguang
+	> Mail: hug@haizeix.com
+	> Created Time: 四  8/27 16:28:23 2020
+ ************************************************************************/
+
+#ifndef _AST_H
+#define _AST_H
+
 #include <hythonLexer.h>
 #include <hythonParser.h>
 #include <string>
@@ -11,7 +15,7 @@
 namespace haizei {
 
 class ASTNode {
-public:
+public :
     ASTNode(const char *file_name);
     ASTNode(pANTLR3_BASE_TREE);
     int size() const;
@@ -23,14 +27,16 @@ public:
     ~ASTNode();
 
 private:
-    pANTLR3_BASE_TREE tree;
     pANTLR3_INPUT_STREAM input;
     phythonLexer lex;
     pANTLR3_COMMON_TOKEN_STREAM tokens;
     phythonParser parser;
+    pANTLR3_BASE_TREE tree;
     pANTLR3_COMMON_TOKEN tok;
-
+    
     void init_tree(const char *file_name);
 };
 
-} // end of haizei
+} // end of namespace haizei
+
+#endif

@@ -33,7 +33,10 @@
 ```
 
 ## 3.增加弱类型系统
-```bash
-1.用责任链改写整体 ExprTreeEvaluator类的功能
-2.设计并实现弱类型系统
-```
+
+1. 用责任链模式改写整体 ExprTreeEvaluator 类的功能
+2. 增加了责任链的单例模式，MasterChianSingle 类
+3. 增加了功能 master 类
+4. 增加了 作用域 parameter 类
+5. `找到程序中的 BUG`
+6. 设计并实现弱类型系统

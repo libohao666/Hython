@@ -1,13 +1,25 @@
 #include <master.h>
-#include <single.h>
-#include <memory>
 #include <iostream>
+#include <single.h>
 
 namespace haizei {
 
 int ExprMaster::run(ASTNode &tree, std::shared_ptr<Parameter> &p) {
-    #define BOP(op) MasterChainRun::run(tree[0], p) op MasterChainRun::run(tree[1], p)
+    #define BOP(op) MasterChainSingle::run(tree[0], p) op MasterChainSingle::run(tree[1], p)
+    #define MR(a, b) MasterChainSingle::run(a, b)
     switch (tree.type()) {
+        case DEF: { 
+            int init_val = 0;
+            for (int i = 0; i < tree.size(); i++) {
+                std::string var(tree[i].text());
+                init_val = 0;
+                if (tree[i].size() == 1) {
+                    init_val = MR(tree[i][0], p);
+                }
+                p->def_param(var, init_val);
+            }
+            return init_val;
+        } break;
         case INT: {
             std::string s = tree.text();
             if(s[0] == '-') {
@@ -35,75 +47,99 @@ int ExprMaster::run(ASTNode &tree, std::shared_ptr<Parameter> &p) {
         case NE: return BOP(!=);
         case ASSIGN: {
             std::string var(tree[0].text());
-            p->get_param(var);
-            int val = MasterChainRun::run(tree[1], p);
+            int val = MR(tree[1], p);
             p->set_param(var, val);
             return val;
         }
     }
+    #undef MR
     #undef BOP
-    throw std::runtime_error(typeid(*this).name() + "Unhandled token: #" + tree.type());
+    throw std::runtime_error(
+        std::string(typeid(*this).name()) 
+        + std::string("Unhandled token: #")
+        + std::to_string(tree.type())
+    );
     return 0;
 }
 
-int ControlBlockMaster::run(ASTNode &node, std::shared_ptr<Parameter> &p) {
-    // TODO
-    switch (node.type()) {
+int ControlBlockMaster::run(ASTNode &tree, std::shared_ptr<Parameter> &p) {
+    #define MR(a, b) MasterChainSingle::run(a, b)
+    std::shared_ptr<Parameter> newp = std::make_shared<Parameter>(p);
+    switch (tree.type()) {
         case BLOCK: {
-            int r = 0;
-            for(int i = 0; i < node.size(); i++) {
-                r = MasterChainRun::run(node[0], p)
+            for (int i = 0; i < tree.size(); i++) {
+                int val = MR(tree[i], newp);
             }
-            return r;
-        }
-        case FOR: {
-            for (MasterChainRun::run(node[0], p); MasterChainRun::run(node[1], p); MasterChainRun::run(node[2], p)) MasterChainRun::run(node[3], p);
             return 0;
         }
+        case FOR: {
+            for (MR(tree[0], newp); MR(tree[1], newp); MR(tree[2], newp)) {
+                MR(tree[3], newp);
+            }
+        }
     }
-    throw std::runtime_error(typeid(*this).name() + "Unhandled token: #" + node.type());
+    #undef MR
+    throw std::runtime_error(
+        std::string(typeid(*this).name()) 
+        + std::string("Unhandled token: #") 
+        + std::to_string(tree.type())
+    );
     return 0;
 }
 
-int ControlNoBlockExprMaster::run(ASTNode &node, std::shared_ptr<Parameter> &p) {
-    // TODO
-    switch (node.type()) {
+int ControlNoBlockMaster::run(ASTNode &tree, std::shared_ptr<Parameter> &p) {
+    #define MR(a, b) MasterChainSingle::run(a, b)
+    switch (tree.type()) {
         case IF: {
-            if (MasterChainRun::run(node[0], p)) {
-                MasterChainRun::run(node[1], p);
-            } else if (node.size() == 3) {
-                MasterChainRun::run(node[2], p);
+            if (MR(tree[0], p)) {
+                MR(tree[1], p);
+            } else if (tree.size() == 3) {
+                MR(tree[2], p);
             }
             return 0;
         }
         case WHILE: {
-            while (MasterChainRun::run(node[0], p)) MasterChainRun::run(node[1], p);
+            while (MR(tree[0], p)) {
+                MR(tree[1], p);
+            }
             return 0;
         }
         case DOWHILE: {
             do {
-                MasterChainRun::run(node[1], p);
-            } while(MasterChainRun::run(node[0], p));
+                MR(tree[1], p);
+            } while (MR(tree[0], p));
             return 0;
         }
     }
-    throw std::runtime_error(typeid(*this).name() + "Unhandled token: #" + tree.type());
+    #undef MR
+    throw std::runtime_error(
+        std::string(typeid(*this).name()) 
+        + std::string("Unhandled token: #") 
+        + std::to_string(tree.type())
+    );
     return 0;
 }
 
-int PrintMaster::run(ASTNode &node, std::shared_ptr<Parameter> &p) {
-    // TODO
-    switch (node.type()) {
+int PrintMaster::run(ASTNode &tree, std::shared_ptr<Parameter> &p) {
+    std::cout << "PRINT:" << std::endl;
+    std::cout << tree.size() << std::endl;
+    #define MR(a, b) MasterChainSingle::run(a, b)
+    switch (tree.type()) { 
         case PRINT: {
-            for(int i = 0; i < node.size(); i++) {
-                if (i) std::cout << " ";
-                std::cout << MasterChainRun::run(node[i], p);
+            for (int i = 0; i < tree.size(); i++) {
+                i && std::cout << " ";
+                std::cout << MR(tree[i], p);
             }
             std::cout << std::endl;
-            return 1;
+            return 0;
         }
     }
-    throw std::runtime_error(typeid(*this).name() + "Unhandled token: #" + tree.type());
+    #undef MR
+    throw std::runtime_error(
+        std::string(typeid(*this).name()) 
+        + std::string("Unhandled token: #") 
+        + std::to_string(tree.type())
+    );
     return 0;
 }
 
