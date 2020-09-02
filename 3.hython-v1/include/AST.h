@@ -1,21 +1,25 @@
+/*
+* @Author: lbh
+* @Date: 2020-09-02 09:13:49 
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2020-09-02 09:41:17
+*/
 #include <hythonLexer.h>
 #include <hythonParser.h>
-#include <head.h>
-#include <factory.h>
+#include <string>
 
 namespace haizei {
 
 class ASTNode {
 public:
     ASTNode(const char *file_name);
-    ASTNode(ANTLR3_BASE_TREE);
-    int size();
+    ASTNode(pANTLR3_BASE_TREE);
+    int size() const;
     std::string text();
     ASTNode operator[](int);
-    bool hasToken();
-    int type();
+    bool hasToken() const;
+    int type() const;
     void destroy();
-    IMaster::IFactory *factory;
     ~ASTNode();
 
 private:

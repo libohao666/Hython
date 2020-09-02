@@ -1,38 +1,44 @@
-#include <head.h>
-#include <master.h>
-#include <AST.h>
 #include <ExprTreeEvaluator.h>
+#include <iostream>
 
-namespace haizei {
+ExprTreeEvaluator::ExprTreeEvaluator() : next(NULL){}
 
-IMaster::IMaster(ASTNode tree) : tree(tree) {}
-IMaster::~IMaster() {}
+ExprTreeEvaluator::ExprTreeEvaluator(ExprTreeEvaluator *next) : next(next) {}
 
-PrintMaster::PrintMaster(ASTNode tree) : IMaster(tree) {}
-ExprMaster::ExprMaster(ASTNode tree) : IMaster(tree) {}
-BlockMaster::BlockMaster(ASTNode tree) : IMaster(tree) {}
-CondMaster::CondMaster(ASTNode tree) : IMaster(tree) {}
-CtrlMaster::CtrlMaster(ASTNode tree) : IMaster(tree) {}
-
-
-void IMaster::IFactory::destory(IMaster *master) {
-    delete master;    
+void ExprTreeEvaluator::def_param(std::string name, int val) {
+    if (memory.find(name) != memory.end()) {
+        throw std::runtime_error("!!![Error] param redefined : " + name);
+    }
+    memory[name] = val;
+    return ;
 }
 
-int PrintMaster::run() {
-    if (tree.type() != PRINT) {
-        throw std::runtime_error("tree type is not PRINT!");
+void ExprTreeEvaluator::set_param(std::string name, int val) {
+    if (memory.find(name) != memory.end()) {
+        memory[name] = val;
+        return ;
     }
-    for(int i = 0; i < tree.size(); i++) {
-        if (i) std::cout << " ";
-        std::cout << run(tree[i]);
+    if (this->next) {
+        this->next->set_param(name, val);
+        return ;
     }
-    std::cout << std::endl;
-    return 1;
 }
 
-int ExprMaster::run() {
-    switch(tree.type()) {
+int ExprTreeEvaluator::get_param(std::string name) {
+    if (this->memory.find(name) == this->memory.end() && !this->next) {
+        throw std::runtime_error("!!![Error] param unknown : " + name);
+    } 
+    if (this->memory.find(name) != this->memory.end()) {
+        return this->memory[name];
+    }
+    if (this->next) return this->next->get_param(name);
+    return 0;
+}
+
+int ExprTreeEvaluator::run(haizei::ASTNode tree)
+{
+    if(tree.hasToken()) {
+        switch(tree.type()) {
         case INT: {
             std::string s = tree.text();
             if(s[0] == '~') {
@@ -73,26 +79,22 @@ int ExprMaster::run() {
             }
             return init_val;
         }
-        default : {
-            throw std::runtime_error("tree type is not EXPR!");
+        case BLOCK: {
+            ExprTreeEvaluator tmp(this);
+            int r = 0;
+            for(int i = 0; i < tree.size(); i++) {
+                r = tmp.run(tree[i]);
+            }
+            return r;
         }
-    }
-}
-
-int BlockMaster::run() {
-    if (tree.type() != BLOCK) {
-        throw std::runtime_error("tree type is not BLOCK!");
-    }
-    ExprTreeEvaluator tmp(this);
-    int r = 0;
-    for(int i = 0; i < tree.size(); i++) {
-        r = tmp.run(tree[i]);
-    }
-    return r;
-}
-
-int CondMaster::run() {
-    switch (tree.type()) {
+        case PRINT: {
+            for(int i = 0; i < tree.size(); i++) {
+                if (i) std::cout << " ";
+                std::cout << run(tree[i]);
+            }
+            std::cout << std::endl;
+            return 1;
+        }
         case OR: {
             return run(tree[0]) || run(tree[1]);
         }
@@ -117,14 +119,14 @@ int CondMaster::run() {
         case NE: {
             return run(tree[0]) != run(tree[1]);
         }
-        default : {
-            throw std::runtime_error("tree type is not COND!");
+        case IF: {
+            if (run(tree[0])) {
+                run(tree[1]);
+            } else if (tree.size() == 3) {
+                run(tree[2]);
+            }
+            return 0;
         }
-    }
-}
-
-int CtrlMaster::run() {
-    switch (tree.type()) {
         case FOR: {
             ExprTreeEvaluator tmp(this);
             for (tmp.run(tree[0]); tmp.run(tree[1]); tmp.run(tree[2])) tmp.run(tree[3]);
@@ -142,10 +144,16 @@ int CtrlMaster::run() {
             } while(tmp.run(tree[0]));
             return 0;
         }
-        default : {
-            throw std::runtime_error("tree type is not CTRL!");
+        default:
+            std::cout << "Unhandled token: #" << tree.type() << std::endl;
+            return -1;
         }
     }
+    else {
+        int r = 0;
+        for(int i = 0; i < tree.size(); i++) {
+            r = run(tree[i]);
+        }
+        return r;
+    }
 }
-
-} // end of namespace haizei

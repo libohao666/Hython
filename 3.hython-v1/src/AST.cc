@@ -1,5 +1,5 @@
-#include <head.h>
 #include <AST.h>
+#include <iostream>
 
 namespace haizei {
 
@@ -30,7 +30,7 @@ ASTNode ASTNode::operator[](int i) {
     return (pANTLR3_BASE_TREE)tree->getChild(tree, i);
 }
 
-bool ASTNode::hasToken() {
+bool ASTNode::hasToken(){
     if (tok) return true;
     return false;
 }
