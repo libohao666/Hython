@@ -1,10 +1,3 @@
-/*************************************************************************
-	> File Name: parameter.h
-	> Author: huguang
-	> Mail: hug@haizeix.com
-	> Created Time: 三  9/ 2 16:20:38 2020
- ************************************************************************/
-
 #ifndef _PARAMETER_H
 #define _PARAMETER_H
 

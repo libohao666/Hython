@@ -121,8 +121,6 @@ int ControlNoBlockMaster::run(ASTNode &tree, std::shared_ptr<Parameter> &p) {
 }
 
 int PrintMaster::run(ASTNode &tree, std::shared_ptr<Parameter> &p) {
-    std::cout << "PRINT:" << std::endl;
-    std::cout << tree.size() << std::endl;
     #define MR(a, b) MasterChainSingle::run(a, b)
     switch (tree.type()) { 
         case PRINT: {

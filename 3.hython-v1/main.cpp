@@ -1,10 +1,3 @@
-/*************************************************************************
-	> File Name: main.cpp
-	> Author: huguang
-	> Mail: hug@haizeix.com
-	> Created Time: 一  8/24 10:24:49 2020
- ************************************************************************/
-
 #include <hythonLexer.h>
 #include <hythonParser.h>
 #include <cassert>
