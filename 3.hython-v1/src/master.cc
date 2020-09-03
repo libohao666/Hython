@@ -76,6 +76,7 @@ int ControlBlockMaster::run(ASTNode &tree, std::shared_ptr<Parameter> &p) {
             for (MR(tree[0], newp); MR(tree[1], newp); MR(tree[2], newp)) {
                 MR(tree[3], newp);
             }
+            return 0;
         }
     }
     #undef MR
